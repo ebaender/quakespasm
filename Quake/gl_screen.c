@@ -120,6 +120,10 @@ int	scr_tileclear_updates = 0; //johnfitz
 
 void SCR_ScreenShot_f (void);
 
+// lokus -- commands
+void SCR_SetScaleCvars (void);
+void SCR_SetAlphaCvars (void);
+
 /*
 ===============================================================================
 
@@ -510,6 +514,10 @@ void SCR_Init (void)
 	Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
 	Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
 	Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
+
+	// lokus -- commands
+	Cmd_AddCommand("scr_scale",SCR_SetScaleCvars);
+	Cmd_AddCommand("scr_alpha",SCR_SetAlphaCvars);
 
 	SCR_LoadPics (); //johnfitz
 
@@ -1118,6 +1126,52 @@ void SCR_TileClear (void)
 						r_refdef.vrect.width,
 						glheight - r_refdef.vrect.y - r_refdef.vrect.height - sb_lines);
 	}
+}
+
+/*
+==================
+SCR_SetScaleCvars
+lokus -- commands
+==================
+*/
+void SCR_SetScaleCvars (void)
+{
+	float scale;
+
+	if (Cmd_Argc() != 2)
+	{
+		Con_Printf ("scr_scale <1.0 - 6.0> : set scale cvars\n");
+		return;
+	}
+
+	scale = CLAMP (1.0, atof(Cmd_Argv(1)), 6.0);
+
+	Cvar_SetValue ("scr_conscale", scale);
+	Cvar_SetValue ("scr_menuscale", scale);
+	Cvar_SetValue ("scr_sbarscale", scale);
+	Cvar_SetValue ("scr_crosshairscale", scale);
+}
+
+/*
+==================
+SCR_SetAlphaCvars
+lokus -- commands
+==================
+*/
+void SCR_SetAlphaCvars (void)
+{
+	float alpha;
+
+	if (Cmd_Argc() != 2)
+	{
+		Con_Printf ("scr_alpha <0.0 - 1.0> : set alpha cvars\n");
+		return;
+	}
+
+	alpha = CLAMP (0.0, atof(Cmd_Argv(1)), 1.0);
+
+	Cvar_Set ("scr_conalpha", Cmd_Argv(1));
+	Cvar_Set ("scr_sbaralpha", Cmd_Argv(1));
 }
 
 /*
