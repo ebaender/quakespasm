@@ -33,6 +33,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 qboolean	premul_hud = false;//true;
 cvar_t		scr_conalpha = {"scr_conalpha", "0.5", CVAR_ARCHIVE}; //johnfitz
 
+
+// lokus -- commands
+void Draw_SetScale (void);
+
 qpic_t		*draw_disc;
 qpic_t		*draw_backtile;
 
@@ -469,6 +473,9 @@ Draw_Init -- johnfitz -- rewritten
 void Draw_Init (void)
 {
 	Cvar_RegisterVariable (&scr_conalpha);
+
+	// lokus -- commands
+	Cmd_AddCommand("scale", Draw_SetScale);
 
 	// clear scrap and allocate gltextures
 	memset(scrap_allocated, 0, sizeof(scrap_allocated));
@@ -913,4 +920,29 @@ void GL_Set2D (void)
 		glEnable (GL_ALPHA_TEST);
 	}
 	glColor4f (1,1,1,1);
+}
+
+/*
+==================
+Draw_SetScale
+lokus -- commands
+==================
+*/
+void Draw_SetScale (void)
+{
+	float scale;
+
+	if (Cmd_Argc() != 2)
+	{
+		Con_Printf ("scale <1.0 - 4.0> : set game scale\n");
+		return;
+	}
+
+	scale = CLAMP (1.0, atof(Cmd_Argv(1)), 4.0);
+
+	Cvar_SetValue ("r_scale", scale);
+	Cvar_SetValue ("scr_conscale", scale);
+	Cvar_SetValue ("scr_menuscale", scale);
+	Cvar_SetValue ("scr_sbarscale", scale);
+	Cvar_SetValue ("scr_crosshairscale", scale);
 }
