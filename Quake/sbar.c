@@ -86,6 +86,10 @@ void Sbar_ShowScores (void)
 		return;
 	sb_showscores = true;
 	sb_updates = 0;
+
+	// lokus -- sbar
+	if (scr_sbar_hidden.value)
+		scr_sbar = 1;
 }
 
 /*
@@ -99,6 +103,10 @@ void Sbar_DontShowScores (void)
 {
 	sb_showscores = false;
 	sb_updates = 0;
+
+	// lokus -- sbar
+	if (scr_sbar_hidden.value)
+		scr_sbar = 0;
 }
 
 /*
