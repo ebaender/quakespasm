@@ -36,7 +36,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //alternatively, just allocate them persistently and purge them only when there appear to be no more references to it (fte). makes strzone redundant.
 
 extern cvar_t sv_gameplayfix_setmodelrealbox;
-cvar_t pr_checkextension = {"pr_checkextension", "1", CVAR_NONE};	//spike - enables qc extensions. if 0 then they're ALL BLOCKED! MWAHAHAHA! *cough* *splutter*
+
+// lokus -- particle
+cvar_t pr_checkextension = {"pr_checkextension", "0", CVAR_NONE};	//spike - enables qc extensions. if 0 then they're ALL BLOCKED! MWAHAHAHA! *cough* *splutter*
+// cvar_t pr_checkextension = {"pr_checkextension", "1", CVAR_NONE};	//spike - enables qc extensions. if 0 then they're ALL BLOCKED! MWAHAHAHA! *cough* *splutter*
+
 static int pr_ext_warned_particleeffectnum;	//so these only spam once per map
 
 static void *PR_FindExtGlobal(int type, const char *name);
