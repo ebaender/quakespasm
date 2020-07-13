@@ -446,7 +446,11 @@ static void FinishParticleType(part_type_t *ptype);
 
 static void R_ParticleDesc_Callback(struct cvar_s *var);
 static cvar_t r_bouncysparks = {"r_bouncysparks", "1"};
-static cvar_t r_part_rain = {"r_part_rain", "1"};
+
+// lokus -- particle
+static cvar_t r_part_rain = {"r_part_rain", "0"};
+// static cvar_t r_part_rain = {"r_part_rain", "1"};
+
 #if UNSUPPORTED
 static cvar_t r_bloodstains = {"r_bloodstains", "1"};
 #endif
