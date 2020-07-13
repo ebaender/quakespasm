@@ -37,7 +37,10 @@ cvar_t		scr_conalpha = {"scr_conalpha", "0.5", CVAR_ARCHIVE}; //johnfitz
 cvar_t		scr_conaspect = {"scr_conaspect", "1", CVAR_ARCHIVE};
 
 // lokus -- commands
-void Draw_SetScale (void);
+cvar_t		scale = {"scale", "2", CVAR_ARCHIVE};
+
+// lokus -- commands
+void Draw_SetScale (cvar_t*);
 
 qpic_t		*draw_disc;
 qpic_t		*draw_backtile;
@@ -480,7 +483,9 @@ void Draw_Init (void)
 	Cvar_RegisterVariable (&scr_conaspect);
 
 	// lokus -- commands
-	Cmd_AddCommand("scale", Draw_SetScale);
+	// Cmd_AddCommand("scale", Draw_SetScale);
+	Cvar_RegisterVariable(&scale);	
+	Cvar_SetCallback (&scale, Draw_SetScale);
 
 	// clear scrap and allocate gltextures
 	memset(scrap_allocated, 0, sizeof(scrap_allocated));
@@ -941,17 +946,9 @@ Draw_SetScale
 lokus -- commands
 ==================
 */
-void Draw_SetScale (void)
+void Draw_SetScale (cvar_t *var)
 {
-	if (Cmd_Argc() != 2)
-	{
-		Con_Printf ("scale <1.0 - 4.0> : set game scale\n");
-		return;
-	}
-
-	float scale = atof(Cmd_Argv(1));
-	scale = CLAMP (1.0, scale, 4.0);
-
-	Cvar_SetValue ("r_scale", scale);
-	SCR_SetScaleCvars(scale);
+	float clamped_scale = CLAMP (1.0, scale.value, 4.0);
+	Cvar_SetValue ("r_scale", clamped_scale);
+	SCR_SetScaleCvars(clamped_scale);
 }

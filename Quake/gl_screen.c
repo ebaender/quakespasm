@@ -1138,8 +1138,6 @@ void SCR_SetScaleCvars (float scale)
 {
 	scale = CLAMP (1.0, scale, 6.0);
 
-	Con_Printf("%d", scale);
-
 	Cvar_SetValue ("scr_conscale", scale);
 	Cvar_SetValue ("scr_menuscale", scale);
 	Cvar_SetValue ("scr_sbarscale", scale);
@@ -1160,7 +1158,7 @@ void SCR_SetScale (void)
 		return;
 	}
 	float scale = atof(Cmd_Argv(1));
-	SCR_SetScaleCvars(atof(Cmd_Argv(1)));
+	SCR_SetScaleCvars(scale);
 }
 
 /*

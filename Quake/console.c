@@ -72,6 +72,8 @@ qboolean	con_debuglog = false;
 
 qboolean	con_initialized;
 
+// lokus -- console
+int Con_GetLinewidth (void);
 
 /*
 ================
