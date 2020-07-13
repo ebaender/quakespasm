@@ -48,7 +48,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // combined version string like "0.92.1-beta1"
 #define	QUAKESPASM_VER_STRING	QS_STRINGIFY(QUAKESPASM_VERSION) "." QS_STRINGIFY(QUAKESPASM_VER_PATCH) QUAKESPASM_VER_SUFFIX
 
-#define ENGINE_NAME_AND_VER "QSS" " " QUAKESPASM_VER_STRING
+// lokus -- version
+#define ENGINE_NAME_AND_VER "LOQSS" " " QUAKESPASM_VER_STRING
+// #define ENGINE_NAME_AND_VER "QSS" " " QUAKESPASM_VER_STRING
 
 //define	PARANOID			// speed sapping error checking
 
@@ -214,6 +216,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	MAX_SCOREBOARDNAME	32
 
 #define	SOUND_CHANNELS		8
+
+// lokus -- console
+#define CON_PIC_WIDTH	320
+#define CON_PIC_HEIGHT	200
 
 typedef struct
 {

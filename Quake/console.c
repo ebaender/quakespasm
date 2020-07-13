@@ -40,6 +40,10 @@ float		con_cursorspeed = 4;
 #define		CON_TEXTSIZE (1024 * 1024) //ericw -- was 65536. johnfitz -- new default size
 #define		CON_MINSIZE  16384 //johnfitz -- old default, now the minimum size
 
+// lokus -- console
+#define		CON_MAX_LINE_WIDTH 38
+#define		CON_CHAR_WIDTH 4
+
 int		con_buffersize; //johnfitz -- user can now override default
 
 qboolean 	con_forcedup;		// because no entities to refresh
@@ -82,14 +86,20 @@ const char *Con_Quakebar (int len)
 	int i;
 
 	len = q_min(len, (int)sizeof(bar) - 2);
-	len = q_min(len, con_linewidth);
+
+	// lokus -- console
+	len = q_min(len, Con_GetLinewidth());
+	// len = q_min(len, con_linewidth);
 
 	bar[0] = '\35';
 	for (i = 1; i < len - 1; i++)
 		bar[i] = '\36';
 	bar[len-1] = '\37';
 
-	if (len < con_linewidth)
+	// lokus -- console
+	if (len < Con_GetLinewidth())
+	// if (len < con_linewidth)
+
 	{
 		bar[len] = '\n';
 		bar[len+1] = 0;
@@ -508,7 +518,11 @@ static void Con_Print (const char *txt)
 					break;
 
 			// word wrap
-			if (l != con_linewidth && (con_x + l > con_linewidth))
+
+			// lokus -- console
+			if (l != Con_GetLinewidth() && (con_x + l > Con_GetLinewidth()))
+			// if (l != con_linewidth && (con_x + l > con_linewidth))
+
 				con_x = 0;
 
 			boundary = false;
@@ -1179,6 +1193,46 @@ DRAWING
 */
 
 /*
+==================
+Con_GetLineWidth
+lokus -- console
+==================
+*/
+int Con_GetLinewidth (void) {
+	return scr_conaspect.value ? CON_MAX_LINE_WIDTH : con_linewidth;
+}
+
+/*
+==================
+Con_GetWidthOffset
+lokus -- console
+==================
+*/
+int Con_GetWidthOffset (void) {
+	return scr_conaspect.value ? (vid.width / 2 / scr_conscale.value - CON_PIC_WIDTH / 2) / CON_CHAR_WIDTH / 2 : 0;
+}
+
+/*
+==================
+Con_GetHeightOffset
+lokus -- console
+==================
+*/
+int Con_GetHeightOffset (void) {
+	return scr_conaspect.value ? (vid.height / scr_conscale.value - CON_PIC_HEIGHT) / 2 : 0;
+}
+
+/*
+==================
+Con_GetReverseWidthOffset
+lokus -- console
+==================
+*/
+int Con_GetReverseLinewidth (void) {
+	return scr_conaspect.value ? Con_GetWidthOffset() + CON_PIC_WIDTH / CON_CHAR_WIDTH / 2 - 2 : con_linewidth;
+}
+
+/*
 ================
 Con_DrawNotify
 
@@ -1267,20 +1321,32 @@ void Con_DrawInput (void)
 		return;		// don't draw anything
 
 // prestep if horizontally scrolling
-	if (key_linepos >= con_linewidth)
-		ofs = 1 + key_linepos - con_linewidth;
+
+	// lokus -- console
+	if (key_linepos >= Con_GetLinewidth())
+	// if (key_linepos >= con_linewidth)
+		ofs = 1 + key_linepos - Con_GetLinewidth();
+		// ofs = 1 + key_linepos - con_linewidth;
+
 	else
 		ofs = 0;
 
 // draw input string
-	for (i = 0; key_lines[edit_line][i+ofs] && i < con_linewidth; i++)
-		Draw_Character ((i+1)<<3, vid.conheight - 16, key_lines[edit_line][i+ofs]);
+
+	// lokus -- console
+	for (i = 0; key_lines[edit_line][i+ofs] && i < Con_GetLinewidth(); i++)
+	// for (i = 0; key_lines[edit_line][i+ofs] && i < con_linewidth; i++)
+		Draw_Character ((i + Con_GetWidthOffset() + 1) << 3, vid.conheight - Con_GetHeightOffset() - 16, key_lines[edit_line][i + ofs]);
+		// Draw_Character ((i+1)<<3, vid.conheight - 16, key_lines[edit_line][i+ofs]);
 
 // johnfitz -- new cursor handling
 	if (!((int)((realtime-key_blinktime)*con_cursorspeed) & 1))
 	{
 		i = key_linepos - ofs;
-		Draw_Pic ((i+1)<<3, vid.conheight - 16, key_insert ? pic_ins : pic_ovr);
+
+		// lokus -- console
+		Draw_Pic ((i + Con_GetWidthOffset() + 1) << 3, vid.conheight - Con_GetHeightOffset() - 16, key_insert ? pic_ins : pic_ovr);
+		// Draw_Pic ((i+1)<<3, vid.conheight - 16, key_insert ? pic_ins : pic_ovr);
 	}
 }
 
@@ -1305,6 +1371,11 @@ void Con_DrawConsole (int lines, qboolean drawinput)
 	GL_SetCanvas (CANVAS_CONSOLE);
 
 // draw the background
+
+	// lokus -- console 
+	if (con_forcedup)
+		Draw_Fill(0, 0, vid.width, vid.height, 0, 1);
+
 	Draw_ConsoleBackground ();
 
 // draw the buffer text
@@ -1318,18 +1389,27 @@ void Con_DrawConsole (int lines, qboolean drawinput)
 		j = i - con_backscroll;
 		if (j < 0)
 			j = 0;
+
 		text = con_text + (j % con_totallines)*con_linewidth;
 
-		for (x = 0; x < con_linewidth; x++)
-			Draw_Character ( (x + 1)<<3, y, text[x]);
+		// lokus -- console
+		for (x = 0; x < Con_GetLinewidth(); x++)
+		// for (x = 0; x < con_linewidth; x++)
+			if (y > (vid.height / scr_conscale.value - CON_PIC_HEIGHT) || !scr_conaspect.value)
+			Draw_Character ((x + Con_GetWidthOffset() + 1) << 3, y - Con_GetHeightOffset(), text[x]);
+			// Draw_Character ( (x + 1)<<3, y, text[x]);
 	}
 
 // draw scrollback arrows
 	if (con_backscroll)
 	{
 		y += 8; // blank line
-		for (x = 0; x < con_linewidth; x += 4)
-			Draw_Character ((x + 1)<<3, y, '^');
+
+		// lokus -- console
+		for (x = 0; x < Con_GetLinewidth(); x += 4)
+		// for (x = 0; x < con_linewidth; x += 4)
+			Draw_Character ((x + Con_GetWidthOffset() + 1) << 3, y - Con_GetHeightOffset(), '^');
+			// Draw_Character ((x + 1)<<3, y, '^');
 		y += 8;
 	}
 
@@ -1340,7 +1420,10 @@ void Con_DrawConsole (int lines, qboolean drawinput)
 //draw version number in bottom right
 	y += 8;
 	for (x = 0; x < (int)strlen(ver); x++)
-		Draw_Character ((con_linewidth - strlen(ver) + x + 2)<<3, y, ver[x] /*+ 128*/);
+
+		// lokus -- console
+		Draw_Character ((Con_GetReverseLinewidth() - strlen(ver) + x + 2) << 3, y - Con_GetHeightOffset(), ver[x] /*+ 128*/);
+		// Draw_Character ((con_linewidth - strlen(ver) + x + 2)<<3, y, ver[x] /*+ 128*/);
 }
 
 
@@ -1381,7 +1464,6 @@ void Con_NotifyBox (const char *text)
 	realtime = 0;		// put the cursor back to invisible
 	IN_UpdateGrabs();
 }
-
 
 void LOG_Init (quakeparms_t *parms)
 {

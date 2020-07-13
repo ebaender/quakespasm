@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 qboolean	premul_hud = false;//true;
 cvar_t		scr_conalpha = {"scr_conalpha", "0.5", CVAR_ARCHIVE}; //johnfitz
 
+// lokus -- console
+cvar_t		scr_conaspect = {"scr_conaspect", "1", CVAR_ARCHIVE};
 
 // lokus -- commands
 void Draw_SetScale (void);
@@ -474,6 +476,9 @@ void Draw_Init (void)
 {
 	Cvar_RegisterVariable (&scr_conalpha);
 
+	// lokus -- console
+	Cvar_RegisterVariable (&scr_conaspect);
+
 	// lokus -- commands
 	Cmd_AddCommand("scale", Draw_SetScale);
 
@@ -673,16 +678,20 @@ void Draw_ConsoleBackground (void)
 	qpic_t *pic;
 	float alpha;
 
-	// lokus -- conback
-	int pic_width = 320;
-	int pic_height = 200;
-
 	pic = Draw_CachePic ("gfx/conback.lmp");
 
 	// lokus -- conback
-	pic->width = pic_width;
+	if (scr_conaspect.value)
+	{
+		pic->width = CON_PIC_WIDTH;
+		pic->height = CON_PIC_HEIGHT;
+	}
+	else
+	{
+		pic->width = vid.conwidth;
+		pic->height = vid.conheight;
+	}
 	// pic->width = vid.conwidth;
-	pic->height = pic_height;
 	// pic->height = vid.conheight;
 
 	alpha = (con_forcedup) ? 1.0 : scr_conalpha.value;
@@ -705,7 +714,11 @@ void Draw_ConsoleBackground (void)
 			}
 		}
 
-		Draw_Pic(vid.width / 2 / scr_conscale.value - pic_width / 2, vid.height / 2 / scr_conscale.value - pic_height / 2, pic);
+		// lokus -- conback
+		if (scr_conaspect.value)
+			Draw_Pic(vid.width / 2 / scr_conscale.value - CON_PIC_WIDTH / 2, vid.height / 2 / scr_conscale.value - CON_PIC_HEIGHT / 2, pic);
+		else 
+			Draw_Pic(0, 0, pic);
 		// Draw_Pic(0, 0, pic);
 
 		if (alpha < 1.0)

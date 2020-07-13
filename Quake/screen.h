@@ -54,6 +54,9 @@ extern	cvar_t		scr_viewsize;
 
 extern	cvar_t		scr_sbaralpha; //johnfitz
 
+// lokus -- console
+extern cvar_t		scr_conaspect;
+
 void SCR_UpdateWholeScreen (void);
 
 //johnfitz -- stuff for 2d drawing control

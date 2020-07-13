@@ -1217,9 +1217,6 @@ void SCR_UpdateScreen (void)
 // do 3D refresh drawing, and then update the screen
 //
 
-	// lokus -- conback
-	Draw_Fill(0, 0, vid.width, vid.height, 0, 1);
-
 	SCR_SetUpToDrawConsole ();
 
 	V_RenderView ();
