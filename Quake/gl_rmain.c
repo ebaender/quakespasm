@@ -736,7 +736,8 @@ R_DrawViewModel -- johnfitz -- gutted
 void R_DrawViewModel (void)
 {
 	// lokus -- fov
-	R_SetupFOV(r_refdef.fov_vm_x, r_refdef.fov_vm_y);
+	if (scr_fov.value != scr_fov_vm.value)
+		R_SetupFOV(r_refdef.fov_vm_x, r_refdef.fov_vm_y);
 
 	if (!r_drawviewmodel.value || !r_drawentities.value || chase_active.value)
 		return;

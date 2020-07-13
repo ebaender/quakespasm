@@ -557,8 +557,8 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
 
 	// lokus -- sbar
-	Cmd_AddCommand ("+bar", IN_SBarDown);
-	Cmd_AddCommand ("-bar", IN_SBarUp);
+	Cmd_AddCommand ("+showsbar", IN_SBarDown);
+	Cmd_AddCommand ("-showsbar", IN_SBarUp);
 
 }
 
