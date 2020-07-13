@@ -80,6 +80,9 @@ float		scr_conlines;		// lines of console to display
 // lokus -- sbar
 int			scr_sbar;
 
+// lokus -- zoom
+int			scr_zoom;
+
 //johnfitz -- new cvars
 cvar_t		scr_menuscale = {"scr_menuscale", "1", CVAR_ARCHIVE};
 cvar_t		scr_sbarscale = {"scr_sbarscale", "1", CVAR_ARCHIVE};
@@ -100,7 +103,10 @@ cvar_t		scr_viewsize = {"viewsize","100", CVAR_ARCHIVE};
 // lokus -- fov
 cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
 // cvar_t		scr_fov = {"fov","90",CVAR_NONE};	// 10 - 170
-cvar_t		scr_fov_vm = {"fov_vm","90",CVAR_ARCHIVE};
+cvar_t		scr_fov_vm = {"fov_viewmodel","90",CVAR_ARCHIVE};
+
+// lokus -- zoom
+cvar_t		scr_fov_zoom = {"fov_zoom","15",CVAR_ARCHIVE};
 
 cvar_t		scr_fov_adapt = {"fov_adapt","1",CVAR_ARCHIVE};
 cvar_t		scr_conspeed = {"scr_conspeed","500",CVAR_ARCHIVE};
@@ -424,11 +430,13 @@ static void SCR_CalcRefdef (void)
 	r_refdef.vrect.y = (glheight - sb_lines - r_refdef.vrect.height)/2;
 	//johnfitz
 
-	r_refdef.fov_x = AdaptFovx(scr_fov.value, vid.width, vid.height);
+	// lokus -- zoom
+	r_refdef.fov_x = AdaptFovx(scr_zoom ? scr_fov_zoom.value : scr_fov.value, vid.width, vid.height);
+	// r_refdef.fov_x = AdaptFovx(scr_fov.value, vid.width, vid.height);
 	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
-	// lokus -- fov
-	r_refdef.fov_vm_x = AdaptFovx(scr_fov_vm.value, vid.width, vid.height);
+	// lokus -- fov -- zoom
+	r_refdef.fov_vm_x = AdaptFovx(scr_zoom ? scr_fov_vm.value - (scr_fov.value - scr_fov_zoom.value) : scr_fov_vm.value, vid.width, vid.height);
 	r_refdef.fov_vm_y = CalcFovy (r_refdef.fov_vm_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 	scr_vrect = r_refdef.vrect;
@@ -532,14 +540,15 @@ void SCR_Init (void)
 	Cvar_SetCallback (&scr_fov, SCR_Callback_refdef);
 
 	// lokus -- fov
+	Cvar_RegisterVariable (&scr_fov_vm);
 	Cvar_SetCallback (&scr_fov_vm, SCR_Callback_refdef);
 
 	Cvar_SetCallback (&scr_fov_adapt, SCR_Callback_refdef);
 	Cvar_SetCallback (&scr_viewsize, SCR_Callback_refdef);
 	Cvar_RegisterVariable (&scr_fov);
 
-	// lokus -- fov
-	Cvar_RegisterVariable (&scr_fov_vm);
+	// lokus -- zoom
+	Cvar_RegisterVariable(&scr_fov_zoom);
 
 	Cvar_RegisterVariable (&scr_fov_adapt);
 	Cvar_RegisterVariable (&scr_viewsize);

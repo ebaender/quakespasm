@@ -715,7 +715,7 @@ void R_SetupFOV (float fov_x, float fov_y)
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity ();
 
-    GL_SetFrustum (fov_x, fov_y); //johnfitz -- use r_fov* vars
+    GL_SetFrustum (fov_x, fov_y);
 
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity ();

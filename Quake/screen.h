@@ -67,6 +67,10 @@ extern cvar_t		scr_sbar_hidden;
 extern cvar_t		scr_fov;
 extern cvar_t		scr_fov_vm;
 
+// lokus -- zoom
+extern int			scr_zoom;
+extern cvar_t		scr_fov_zoom;
+
 void SCR_UpdateWholeScreen (void);
 
 //johnfitz -- stuff for 2d drawing control
