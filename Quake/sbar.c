@@ -991,7 +991,10 @@ void Sbar_Draw (void)
 {
 	float w; //johnfitz
 
-	if (scr_con_current == vid.height)
+	// lokus -- sbar
+	if (scr_con_current == vid.height || !scr_sbar)
+	// if (scr_con_current == vid.height)
+
 		return;		// console is full screen
 
 	if (cl.qcvm.extfuncs.CSQC_DrawHud)

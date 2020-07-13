@@ -77,10 +77,17 @@ int			glx, gly, glwidth, glheight;
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
+// lokus -- sbar
+int			scr_sbar;
+
 //johnfitz -- new cvars
 cvar_t		scr_menuscale = {"scr_menuscale", "1", CVAR_ARCHIVE};
 cvar_t		scr_sbarscale = {"scr_sbarscale", "1", CVAR_ARCHIVE};
 cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0.75", CVAR_ARCHIVE};
+
+// lokus -- sbar
+cvar_t		scr_sbar_hidden = {"scr_sbar_hidden", "0", CVAR_ARCHIVE};
+
 cvar_t		scr_conwidth = {"scr_conwidth", "0", CVAR_ARCHIVE};
 cvar_t		scr_conscale = {"scr_conscale", "1", CVAR_ARCHIVE};
 cvar_t		scr_crosshairscale = {"scr_crosshairscale", "1", CVAR_ARCHIVE};
@@ -479,6 +486,17 @@ void SCR_LoadPics (void)
 
 /*
 ==================
+SCR_UpdateSBarState
+lokus -- sbar
+==================
+*/
+void SCR_UpdateSBarState (void)
+{
+	scr_sbar = scr_sbar_hidden.value ? 0 : 1;
+}
+
+/*
+==================
 SCR_Init
 ==================
 */
@@ -489,6 +507,11 @@ void SCR_Init (void)
 	Cvar_RegisterVariable (&scr_sbarscale);
 	Cvar_SetCallback (&scr_sbaralpha, SCR_Callback_refdef);
 	Cvar_RegisterVariable (&scr_sbaralpha);
+
+	// lokus -- sbar
+	Cvar_RegisterVariable (&scr_sbar_hidden);
+	Cvar_SetCallback (&scr_sbar_hidden, SCR_UpdateSBarState);
+
 	Cvar_SetCallback (&scr_conwidth, &SCR_Conwidth_f);
 	Cvar_SetCallback (&scr_conscale, &SCR_Conwidth_f);
 	Cvar_RegisterVariable (&scr_conwidth);
@@ -520,6 +543,9 @@ void SCR_Init (void)
 	Cmd_AddCommand("scr_alpha",SCR_SetAlpha);
 
 	SCR_LoadPics (); //johnfitz
+
+	// lokus -- sbar
+	SCR_UpdateSBarState();
 
 	scr_initialized = true;
 }

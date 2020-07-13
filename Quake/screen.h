@@ -59,6 +59,10 @@ extern	cvar_t		scr_sbaralpha; //johnfitz
 // lokus -- console
 extern cvar_t		scr_conaspect;
 
+// lokus -- sbar
+extern int			scr_sbar;
+extern cvar_t		scr_sbar_hidden;
+
 void SCR_UpdateWholeScreen (void);
 
 //johnfitz -- stuff for 2d drawing control

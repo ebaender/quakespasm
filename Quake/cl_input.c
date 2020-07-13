@@ -59,7 +59,6 @@ kbutton_t	in_up, in_down;
 
 int			in_impulse;
 
-
 void KeyDown (kbutton_t *b)
 {
 	int		k;
@@ -175,6 +174,18 @@ void IN_Button8Down(void) {KeyDown(&in_button8);}
 void IN_Button8Up(void) {KeyUp(&in_button8);}
 
 void IN_Impulse (void) {in_impulse=Q_atoi(Cmd_Argv(1));}
+
+// lokus -- sbar
+void IN_SBar (int state) {
+	if (key_dest == key_game && scr_sbar_hidden.value)
+		scr_sbar = state;
+}
+void IN_SBarDown(void) {
+	IN_SBar(1);
+}
+void IN_SBarUp(void) {
+	IN_SBar(0);
+}
 
 /*
 ===============
@@ -541,6 +552,10 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("-klook", IN_KLookUp);
 	Cmd_AddCommand ("+mlook", IN_MLookDown);
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
+
+	// lokus -- sbar
+	Cmd_AddCommand ("+bar", IN_SBarDown);
+	Cmd_AddCommand ("-bar", IN_SBarUp);
 
 }
 
