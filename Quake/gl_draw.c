@@ -948,7 +948,7 @@ lokus -- commands
 */
 void Draw_SetScale (cvar_t *var)
 {
-	float clamped_scale = CLAMP (1.0, scale.value, 4.0);
-	Cvar_SetValue ("r_scale", clamped_scale);
-	SCR_SetScaleCvars(clamped_scale);
+	Cvar_SetValue ("scale", CLAMP (1.0, scale.value, 4.0));
+	Cvar_SetValue ("r_scale", scale.value);
+	SCR_SetScaleCvars(scale.value);
 }
