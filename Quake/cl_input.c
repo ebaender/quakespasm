@@ -176,14 +176,17 @@ void IN_Button8Up(void) {KeyUp(&in_button8);}
 void IN_Impulse (void) {in_impulse=Q_atoi(Cmd_Argv(1));}
 
 // lokus -- sbar
-void IN_SBar (int state) {
+void IN_SBar (int state)
+{
 	if (key_dest == key_game && scr_sbar_hidden.value)
 		scr_sbar = state;
 }
-void IN_SBarDown(void) {
+void IN_SBarDown(void)
+{
 	IN_SBar(1);
 }
-void IN_SBarUp(void) {
+void IN_SBarUp(void)
+{
 	IN_SBar(0);
 }
 

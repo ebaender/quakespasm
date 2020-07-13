@@ -706,11 +706,38 @@ void R_DrawEntitiesOnList (qboolean alphapass) //johnfitz -- added parameter
 
 /*
 =============
+R_SetupFOV
+lokus -- fov
+=============
+*/
+void R_SetupFOV (float fov_x, float fov_y)
+{
+	glMatrixMode(GL_PROJECTION);
+    glLoadIdentity ();
+
+    GL_SetFrustum (fov_x, fov_y); //johnfitz -- use r_fov* vars
+
+	glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity ();
+
+    glRotatef (-90,  1, 0, 0);	    // put Z going up
+    glRotatef (90,  0, 0, 1);	    // put Z going up
+    glRotatef (-r_refdef.viewangles[2],  1, 0, 0);
+    glRotatef (-r_refdef.viewangles[0],  0, 1, 0);
+    glRotatef (-r_refdef.viewangles[1],  0, 0, 1);
+    glTranslatef (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],  -r_refdef.vieworg[2]);
+}
+
+/*
+=============
 R_DrawViewModel -- johnfitz -- gutted
 =============
 */
 void R_DrawViewModel (void)
 {
+	// lokus -- fov
+	R_SetupFOV(r_refdef.fov_vm_x, r_refdef.fov_vm_y);
+
 	if (!r_drawviewmodel.value || !r_drawentities.value || chase_active.value)
 		return;
 
