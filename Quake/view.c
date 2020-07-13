@@ -891,7 +891,10 @@ void V_CalcRefdef (void)
 			//FIXME	I_Error ("steptime < 0");
 			steptime = 0;
 
-		oldz += steptime * 80;
+		// lokus -- elevator
+		oldz += steptime * 160;
+		// oldz += steptime * 80;
+
 		if (oldz > ent->origin[2])
 			oldz = ent->origin[2];
 		if (ent->origin[2] - oldz > 12)
