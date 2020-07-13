@@ -30,6 +30,8 @@ void SCR_LoadPics (void);
 
 void SCR_UpdateScreen (void);
 
+// lokus -- commands
+void SCR_SetScaleCvars(float);
 
 void SCR_SizeUp (void);
 void SCR_SizeDown (void);

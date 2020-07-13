@@ -943,19 +943,15 @@ lokus -- commands
 */
 void Draw_SetScale (void)
 {
-	float scale;
-
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf ("scale <1.0 - 4.0> : set game scale\n");
 		return;
 	}
 
-	scale = CLAMP (1.0, atof(Cmd_Argv(1)), 4.0);
+	float scale = atof(Cmd_Argv(1));
+	scale = CLAMP (1.0, scale, 4.0);
 
 	Cvar_SetValue ("r_scale", scale);
-	Cvar_SetValue ("scr_conscale", scale);
-	Cvar_SetValue ("scr_menuscale", scale);
-	Cvar_SetValue ("scr_sbarscale", scale);
-	Cvar_SetValue ("scr_crosshairscale", scale);
+	SCR_SetScaleCvars(scale);
 }
