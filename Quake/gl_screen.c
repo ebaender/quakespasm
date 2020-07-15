@@ -369,8 +369,14 @@ float CalcFovy (float fov_x, float width, float height)
 {
 	float	a, x;
 
-	if (fov_x < 1 || fov_x > 179)
+	// lokus -- fov
+	if (fov_x > 179)
+	// if (fov_x < 1 || fov_x > 179)
 		Sys_Error ("Bad fov: %f", fov_x);
+
+	// lokus -- fov
+	if (fov_x < 1)
+		fov_x = 1;
 
 	x = width / tan(fov_x / 360 * M_PI);
 	a = atan(height / x);

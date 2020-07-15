@@ -675,6 +675,39 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, int top, int bottom)
 
 /*
 ================
+Draw_GetConsoleOffset
+lokus -- conback
+================
+*/
+int Draw_GetConsoleOffset(int vid_dim, int pic_dim)
+{
+	return ((int) (vid_dim / 2 - pic_dim / 2 * scr_conscale.value) / scr_conscale.value);
+}
+
+/*
+================
+Draw_GetConsoleWidthOffset
+lokus -- conback
+================
+*/
+int Draw_GetConsoleWidthOffset()
+{
+	return Draw_GetConsoleOffset(vid.width, CON_PIC_WIDTH);
+}
+
+/*
+================
+Draw_GetConsoleHeightOffset
+lokus -- conback
+================
+*/
+int Draw_GetConsoleHeightOffset()
+{
+	return Draw_GetConsoleOffset(vid.height, CON_PIC_HEIGHT);
+}
+
+/*
+================
 Draw_ConsoleBackground -- johnfitz -- rewritten
 ================
 */
@@ -721,7 +754,7 @@ void Draw_ConsoleBackground (void)
 
 		// lokus -- conback
 		if (scr_conaspect.value)
-			Draw_Pic(vid.width / 2 / scr_conscale.value - CON_PIC_WIDTH / 2, vid.height / 2 / scr_conscale.value - CON_PIC_HEIGHT / 2, pic);
+			Draw_Pic(Draw_GetConsoleWidthOffset(), Draw_GetConsoleHeightOffset(), pic);
 		else 
 			Draw_Pic(0, 0, pic);
 		// Draw_Pic(0, 0, pic);
