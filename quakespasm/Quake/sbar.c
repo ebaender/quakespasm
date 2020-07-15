@@ -86,6 +86,10 @@ void Sbar_ShowScores (void)
 		return;
 	sb_showscores = true;
 	sb_updates = 0;
+
+	// locque -- sbar
+	if (scr_sbar_hidden.value)
+		scr_sbar = 1;
 }
 
 /*
@@ -99,6 +103,10 @@ void Sbar_DontShowScores (void)
 {
 	sb_showscores = false;
 	sb_updates = 0;
+
+	// locque -- sbar
+	if (scr_sbar_hidden.value)
+		scr_sbar = 0;
 }
 
 /*
@@ -991,7 +999,10 @@ void Sbar_Draw (void)
 {
 	float w; //johnfitz
 
-	if (scr_con_current == vid.height)
+	// locque -- sbar
+	if (scr_con_current == vid.height || !scr_sbar)
+	// if (scr_con_current == vid.height)
+
 		return;		// console is full screen
 
 	if (cl.qcvm.extfuncs.CSQC_DrawHud)

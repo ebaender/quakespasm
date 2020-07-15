@@ -58,6 +58,9 @@ cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", CVAR_NONE};
 
 cvar_t	v_idlescale = {"v_idlescale", "0", CVAR_NONE};
 
+// locque -- sway
+cvar_t	v_sway = {"v_sway", "1", CVAR_ARCHIVE};
+
 cvar_t	crosshair = {"crosshair", "0", CVAR_ARCHIVE};
 
 cvar_t	gl_cshiftpercent = {"gl_cshiftpercent", "100", CVAR_NONE};
@@ -814,6 +817,10 @@ void V_CalcRefdef (void)
 
 	VectorCopy (cl.viewangles, r_refdef.viewangles);
 	V_CalcViewRoll ();
+	
+	// locque -- sway
+	v_idlescale.value = v_sway.value;
+
 	V_AddIdle ();
 
 // offsets
@@ -891,7 +898,10 @@ void V_CalcRefdef (void)
 			//FIXME	I_Error ("steptime < 0");
 			steptime = 0;
 
-		oldz += steptime * 80;
+		// locque -- elevator
+		oldz += steptime * 160;
+		// oldz += steptime * 80;
+
 		if (oldz > ent->origin[2])
 			oldz = ent->origin[2];
 		if (ent->origin[2] - oldz > 12)
@@ -963,6 +973,10 @@ void V_Init (void)
 	Cvar_RegisterVariable (&v_ipitch_level);
 
 	Cvar_RegisterVariable (&v_idlescale);
+
+	// locque -- sway
+	Cvar_RegisterVariable(&v_sway);
+
 	Cvar_RegisterVariable (&crosshair);
 	Cvar_RegisterVariable (&gl_cshiftpercent);
 	Cvar_RegisterVariable (&gl_cshiftpercent_contents); // QuakeSpasm

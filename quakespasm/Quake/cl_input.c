@@ -59,7 +59,6 @@ kbutton_t	in_up, in_down;
 
 int			in_impulse;
 
-
 void KeyDown (kbutton_t *b)
 {
 	int		k;
@@ -175,6 +174,37 @@ void IN_Button8Down(void) {KeyDown(&in_button8);}
 void IN_Button8Up(void) {KeyUp(&in_button8);}
 
 void IN_Impulse (void) {in_impulse=Q_atoi(Cmd_Argv(1));}
+
+// locque -- sbar
+void IN_SBar (int sbar_state)
+{
+	if (key_dest == key_game && scr_sbar_hidden.value)
+		scr_sbar = sbar_state;
+}
+void IN_SBarDown (void)
+{
+	IN_SBar(1);
+}
+void IN_SBarUp (void)
+{
+	IN_SBar(0);
+}
+
+// locque -- zoom
+void IN_Zoom (int zoom_state)
+{
+	if (key_dest == key_game)
+	scr_zoom = zoom_state;
+	vid.recalc_refdef = 1;
+}
+void IN_ZoomDown (void)
+{
+	IN_Zoom(scr_fov_zoom.value);
+}
+void IN_ZoomUp (void)
+{
+	IN_Zoom(0);
+}
 
 /*
 ===============
@@ -541,6 +571,15 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("-klook", IN_KLookUp);
 	Cmd_AddCommand ("+mlook", IN_MLookDown);
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
+
+	// locque -- sbar
+	Cmd_AddCommand ("+showsbar", IN_SBarDown);
+	Cmd_AddCommand ("-showsbar", IN_SBarUp);
+
+	// locque -- zoom
+	Cmd_AddCommand ("+zoom", IN_ZoomDown);
+	Cmd_AddCommand ("-zoom", IN_ZoomUp);
+	scr_zoom = 0;
 
 }
 

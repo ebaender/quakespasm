@@ -1004,7 +1004,11 @@ void M_AdjustSliders (int dir)
 	{
 	case OPT_SCALE:	// console and menu scale
 		l = ((vid.width + 31) / 32) / 10.0;
-		f = scr_conscale.value + dir * .1;
+
+		// locque -- integer scaling
+		f = scr_conscale.value + dir;
+		// f = scr_conscale.value + dir * .1;
+
 		if (f < 1)	f = 1;
 		else if(f > l)	f = l;
 		Cvar_SetValue ("scr_conscale", f);

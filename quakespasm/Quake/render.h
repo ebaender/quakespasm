@@ -126,6 +126,9 @@ typedef struct
 
 	float		fov_x, fov_y;
 
+	// locque -- fov
+	float		fov_vm_x, fov_vm_y;
+
 	int			ambientlight;
 	qboolean	drawworld;
 } refdef_t;

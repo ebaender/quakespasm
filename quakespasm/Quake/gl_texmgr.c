@@ -33,6 +33,7 @@ static cvar_t	gl_max_size = {"gl_max_size", "0", CVAR_NONE};
 static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
 static GLint	gl_hardware_maxsize;
 
+#define	MAX_GLTEXTURES	2048
 static int numgltextures;
 static gltexture_t	*active_gltextures, *free_gltextures;
 gltexture_t		*notexture, *nulltexture;
@@ -381,14 +382,8 @@ gltexture_t *TexMgr_NewTexture (void)
 {
 	gltexture_t *glt;
 
-	if (!free_gltextures)
-	{
-		int i, newtexturecount = 64;
-		free_gltextures = (gltexture_t *) malloc (newtexturecount * sizeof(gltexture_t));
-		for (i = 0; i < newtexturecount - 1; i++)
-			free_gltextures[i].next = &free_gltextures[i+1];
-		free_gltextures[i].next = NULL;
-	}
+	if (numgltextures == MAX_GLTEXTURES)
+		Sys_Error("numgltextures == MAX_GLTEXTURES\n");
 
 	glt = free_gltextures;
 	free_gltextures = glt->next;
@@ -665,10 +660,9 @@ void TexMgr_Init (void)
 	extern texture_t *r_notexture_mip, *r_notexture_mip2;
 
 	// init texture list
-	int initialtexturecount = 256;
-	free_gltextures = (gltexture_t *) Hunk_AllocName (initialtexturecount * sizeof(gltexture_t), "gltextures");
+	free_gltextures = (gltexture_t *) Hunk_AllocName (MAX_GLTEXTURES * sizeof(gltexture_t), "gltextures");
 	active_gltextures = NULL;
-	for (i = 0; i < initialtexturecount - 1; i++)
+	for (i = 0; i < MAX_GLTEXTURES - 1; i++)
 		free_gltextures[i].next = &free_gltextures[i+1];
 	free_gltextures[i].next = NULL;
 	numgltextures = 0;

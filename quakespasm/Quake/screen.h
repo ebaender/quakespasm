@@ -30,6 +30,8 @@ void SCR_LoadPics (void);
 
 void SCR_UpdateScreen (void);
 
+// locque -- commands
+void SCR_SetScaleCvars(float);
 
 void SCR_SizeUp (void);
 void SCR_SizeDown (void);
@@ -53,6 +55,21 @@ extern	qboolean	scr_skipupdate;
 extern	cvar_t		scr_viewsize;
 
 extern	cvar_t		scr_sbaralpha; //johnfitz
+
+// locque -- console
+extern cvar_t		scr_conaspect;
+
+// locque -- sbar
+extern int			scr_sbar;
+extern cvar_t		scr_sbar_hidden;
+
+// locque -- fov
+extern cvar_t		scr_fov;
+extern cvar_t		scr_fov_vm;
+
+// locque -- zoom
+extern int			scr_zoom;
+extern cvar_t		scr_fov_zoom;
 
 void SCR_UpdateWholeScreen (void);
 

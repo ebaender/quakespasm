@@ -25,10 +25,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+// locque -- conback
+#include "screen.h"
+
 //extern unsigned char d_15to8table[65536]; //johnfitz -- never used
 
 qboolean	premul_hud = false;//true;
 cvar_t		scr_conalpha = {"scr_conalpha", "0.5", CVAR_ARCHIVE}; //johnfitz
+
+// locque -- console
+cvar_t		scr_conaspect = {"scr_conaspect", "1", CVAR_ARCHIVE};
+
+// locque -- commands
+cvar_t		scale = {"scale", "2", CVAR_ARCHIVE};
+
+// locque -- commands
+void Draw_SetScale (cvar_t*);
 
 qpic_t		*draw_disc;
 qpic_t		*draw_backtile;
@@ -467,6 +479,14 @@ void Draw_Init (void)
 {
 	Cvar_RegisterVariable (&scr_conalpha);
 
+	// locque -- console
+	Cvar_RegisterVariable (&scr_conaspect);
+
+	// locque -- commands
+	// Cmd_AddCommand("scale", Draw_SetScale);
+	Cvar_RegisterVariable(&scale);	
+	Cvar_SetCallback (&scale, Draw_SetScale);
+
 	// clear scrap and allocate gltextures
 	memset(scrap_allocated, 0, sizeof(scrap_allocated));
 	memset(scrap_texels, 255, sizeof(scrap_texels));
@@ -655,6 +675,39 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, int top, int bottom)
 
 /*
 ================
+Draw_GetConsoleOffset
+locque -- conback
+================
+*/
+int Draw_GetConsoleOffset(int vid_dim, int pic_dim)
+{
+	return ((int) (vid_dim / 2 - pic_dim / 2 * scr_conscale.value) / scr_conscale.value);
+}
+
+/*
+================
+Draw_GetConsoleWidthOffset
+locque -- conback
+================
+*/
+int Draw_GetConsoleWidthOffset()
+{
+	return Draw_GetConsoleOffset(vid.width, CON_PIC_WIDTH);
+}
+
+/*
+================
+Draw_GetConsoleHeightOffset
+locque -- conback
+================
+*/
+int Draw_GetConsoleHeightOffset()
+{
+	return Draw_GetConsoleOffset(vid.height, CON_PIC_HEIGHT);
+}
+
+/*
+================
 Draw_ConsoleBackground -- johnfitz -- rewritten
 ================
 */
@@ -664,8 +717,20 @@ void Draw_ConsoleBackground (void)
 	float alpha;
 
 	pic = Draw_CachePic ("gfx/conback.lmp");
-	pic->width = vid.conwidth;
-	pic->height = vid.conheight;
+
+	// locque -- conback
+	if (scr_conaspect.value)
+	{
+		pic->width = CON_PIC_WIDTH;
+		pic->height = CON_PIC_HEIGHT;
+	}
+	else
+	{
+		pic->width = vid.conwidth;
+		pic->height = vid.conheight;
+	}
+	// pic->width = vid.conwidth;
+	// pic->height = vid.conheight;
 
 	alpha = (con_forcedup) ? 1.0 : scr_conalpha.value;
 
@@ -687,7 +752,12 @@ void Draw_ConsoleBackground (void)
 			}
 		}
 
-		Draw_Pic (0, 0, pic);
+		// locque -- conback
+		if (scr_conaspect.value)
+			Draw_Pic(Draw_GetConsoleWidthOffset(), Draw_GetConsoleHeightOffset(), pic);
+		else 
+			Draw_Pic(0, 0, pic);
+		// Draw_Pic(0, 0, pic);
 
 		if (alpha < 1.0)
 		{
@@ -901,4 +971,17 @@ void GL_Set2D (void)
 		glEnable (GL_ALPHA_TEST);
 	}
 	glColor4f (1,1,1,1);
+}
+
+/*
+==================
+Draw_SetScale
+locque -- commands
+==================
+*/
+void Draw_SetScale (cvar_t *var)
+{
+	Cvar_SetValue ("scale", CLAMP (1.0, scale.value, 4.0));
+	Cvar_SetValue ("r_scale", scale.value);
+	SCR_SetScaleCvars(scale.value);
 }

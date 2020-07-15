@@ -77,10 +77,20 @@ int			glx, gly, glwidth, glheight;
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
+// locque -- sbar
+int			scr_sbar;
+
+// locque -- zoom
+int			scr_zoom;
+
 //johnfitz -- new cvars
 cvar_t		scr_menuscale = {"scr_menuscale", "1", CVAR_ARCHIVE};
 cvar_t		scr_sbarscale = {"scr_sbarscale", "1", CVAR_ARCHIVE};
 cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0.75", CVAR_ARCHIVE};
+
+// locque -- sbar
+cvar_t		scr_sbar_hidden = {"scr_sbar_hidden", "0", CVAR_ARCHIVE};
+
 cvar_t		scr_conwidth = {"scr_conwidth", "0", CVAR_ARCHIVE};
 cvar_t		scr_conscale = {"scr_conscale", "1", CVAR_ARCHIVE};
 cvar_t		scr_crosshairscale = {"scr_crosshairscale", "1", CVAR_ARCHIVE};
@@ -89,7 +99,15 @@ cvar_t		scr_clock = {"scr_clock", "0", CVAR_NONE};
 //johnfitz
 
 cvar_t		scr_viewsize = {"viewsize","100", CVAR_ARCHIVE};
-cvar_t		scr_fov = {"fov","90",CVAR_NONE};	// 10 - 170
+
+// locque -- fov
+cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
+// cvar_t		scr_fov = {"fov","90",CVAR_NONE};	// 10 - 170
+cvar_t		scr_fov_vm = {"fov_viewmodel","90",CVAR_ARCHIVE};
+
+// locque -- zoom
+cvar_t		scr_fov_zoom = {"fov_zoom","15",CVAR_ARCHIVE};
+
 cvar_t		scr_fov_adapt = {"fov_adapt","1",CVAR_ARCHIVE};
 cvar_t		scr_conspeed = {"scr_conspeed","500",CVAR_ARCHIVE};
 cvar_t		scr_centertime = {"scr_centertime","2",CVAR_NONE};
@@ -119,6 +137,10 @@ float		scr_disabled_time;
 int	scr_tileclear_updates = 0; //johnfitz
 
 void SCR_ScreenShot_f (void);
+
+// locque -- commands
+void SCR_SetScale (void);
+void SCR_SetAlpha (void);
 
 /*
 ===============================================================================
@@ -347,8 +369,14 @@ float CalcFovy (float fov_x, float width, float height)
 {
 	float	a, x;
 
-	if (fov_x < 1 || fov_x > 179)
+	// locque -- fov
+	if (fov_x > 179)
+	// if (fov_x < 1 || fov_x > 179)
 		Sys_Error ("Bad fov: %f", fov_x);
+
+	// locque -- fov
+	if (fov_x < 1)
+		fov_x = 1;
 
 	x = width / tan(fov_x / 360 * M_PI);
 	a = atan(height / x);
@@ -408,8 +436,14 @@ static void SCR_CalcRefdef (void)
 	r_refdef.vrect.y = (glheight - sb_lines - r_refdef.vrect.height)/2;
 	//johnfitz
 
-	r_refdef.fov_x = AdaptFovx(scr_fov.value, vid.width, vid.height);
+	// locque -- zoom
+	r_refdef.fov_x = AdaptFovx(scr_zoom ? scr_fov_zoom.value : scr_fov.value, vid.width, vid.height);
+	// r_refdef.fov_x = AdaptFovx(scr_fov.value, vid.width, vid.height);
 	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
+
+	// locque -- fov -- zoom
+	r_refdef.fov_vm_x = AdaptFovx(scr_zoom ? scr_fov_vm.value - (scr_fov.value - scr_fov_zoom.value) : scr_fov_vm.value, vid.width, vid.height);
+	r_refdef.fov_vm_y = CalcFovy (r_refdef.fov_vm_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 	scr_vrect = r_refdef.vrect;
 }
@@ -475,6 +509,17 @@ void SCR_LoadPics (void)
 
 /*
 ==================
+SCR_UpdateSBarState
+locque -- sbar
+==================
+*/
+void SCR_UpdateSBarState (cvar_t *var)
+{
+	scr_sbar = scr_sbar_hidden.value ? 0 : 1;
+}
+
+/*
+==================
 SCR_Init
 ==================
 */
@@ -485,6 +530,11 @@ void SCR_Init (void)
 	Cvar_RegisterVariable (&scr_sbarscale);
 	Cvar_SetCallback (&scr_sbaralpha, SCR_Callback_refdef);
 	Cvar_RegisterVariable (&scr_sbaralpha);
+
+	// locque -- sbar
+	Cvar_RegisterVariable (&scr_sbar_hidden);
+	Cvar_SetCallback (&scr_sbar_hidden, SCR_UpdateSBarState);
+
 	Cvar_SetCallback (&scr_conwidth, &SCR_Conwidth_f);
 	Cvar_SetCallback (&scr_conscale, &SCR_Conwidth_f);
 	Cvar_RegisterVariable (&scr_conwidth);
@@ -494,9 +544,18 @@ void SCR_Init (void)
 	Cvar_RegisterVariable (&scr_clock);
 	//johnfitz
 	Cvar_SetCallback (&scr_fov, SCR_Callback_refdef);
+
+	// locque -- fov
+	Cvar_RegisterVariable (&scr_fov_vm);
+	Cvar_SetCallback (&scr_fov_vm, SCR_Callback_refdef);
+
 	Cvar_SetCallback (&scr_fov_adapt, SCR_Callback_refdef);
 	Cvar_SetCallback (&scr_viewsize, SCR_Callback_refdef);
 	Cvar_RegisterVariable (&scr_fov);
+
+	// locque -- zoom
+	Cvar_RegisterVariable(&scr_fov_zoom);
+
 	Cvar_RegisterVariable (&scr_fov_adapt);
 	Cvar_RegisterVariable (&scr_viewsize);
 	Cvar_RegisterVariable (&scr_conspeed);
@@ -511,7 +570,14 @@ void SCR_Init (void)
 	Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
 	Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
 
+	// locque -- commands
+	Cmd_AddCommand("scr_scale",SCR_SetScale);
+	Cmd_AddCommand("scr_alpha",SCR_SetAlpha);
+
 	SCR_LoadPics (); //johnfitz
+
+	// locque -- sbar
+	SCR_UpdateSBarState(NULL);
 
 	scr_initialized = true;
 }
@@ -796,7 +862,11 @@ void SCR_SetUpToDrawConsole (void)
 	{
 		// ericw -- (glheight/600.0) factor makes conspeed resolution independent, using 800x600 as a baseline
 		scr_con_current -= scr_conspeed.value*(glheight/600.0)*host_frametime/timescale; //johnfitz -- timescale
-		if (scr_conlines > scr_con_current)
+
+		// locque -- console - move up instantly when centered
+		if (scr_conlines > scr_con_current || ( scr_conaspect.value && scr_con_current > glheight / 2))
+		// if (scr_conlines > scr_con_current)
+
 			scr_con_current = scr_conlines;
 	}
 	else if (scr_conlines > scr_con_current)
@@ -1118,6 +1188,61 @@ void SCR_TileClear (void)
 						r_refdef.vrect.width,
 						glheight - r_refdef.vrect.y - r_refdef.vrect.height - sb_lines);
 	}
+}
+
+/*
+==================
+SCR_SetScaleCvars
+locque -- commands
+==================
+*/
+void SCR_SetScaleCvars (float scale)
+{
+	scale = CLAMP (1.0, scale, 6.0);
+
+	Cvar_SetValue ("scr_conscale", scale);
+	Cvar_SetValue ("scr_menuscale", scale);
+	Cvar_SetValue ("scr_sbarscale", scale);
+	Cvar_SetValue ("scr_crosshairscale", scale);
+}
+
+/*
+==================
+SCR_SetScale
+locque -- commands
+==================
+*/
+void SCR_SetScale (void)
+{
+	if (Cmd_Argc() != 2)
+	{
+		Con_Printf ("scr_scale <1.0 - 6.0> : set scale cvars\n");
+		return;
+	}
+	float scale = atof(Cmd_Argv(1));
+	SCR_SetScaleCvars(scale);
+}
+
+/*
+==================
+SCR_SetAlpha
+locque -- commands
+==================
+*/
+void SCR_SetAlpha (void)
+{
+	float alpha;
+
+	if (Cmd_Argc() != 2)
+	{
+		Con_Printf ("scr_alpha <0.0 - 1.0> : set alpha cvars\n");
+		return;
+	}
+
+	alpha = CLAMP (0.0, atof(Cmd_Argv(1)), 1.0);
+
+	Cvar_SetValue ("scr_conalpha", alpha);
+	Cvar_SetValue ("scr_sbaralpha", alpha);
 }
 
 /*
