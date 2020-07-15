@@ -862,7 +862,11 @@ void SCR_SetUpToDrawConsole (void)
 	{
 		// ericw -- (glheight/600.0) factor makes conspeed resolution independent, using 800x600 as a baseline
 		scr_con_current -= scr_conspeed.value*(glheight/600.0)*host_frametime/timescale; //johnfitz -- timescale
-		if (scr_conlines > scr_con_current)
+
+		// lokus -- console - move up instantly when centered
+		if (scr_conlines > scr_con_current || ( scr_conaspect.value && scr_con_current > glheight / 2))
+		// if (scr_conlines > scr_con_current)
+
 			scr_con_current = scr_conlines;
 	}
 	else if (scr_conlines > scr_con_current)
