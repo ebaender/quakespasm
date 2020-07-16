@@ -92,7 +92,7 @@ cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0", CVAR_ARCHIVE};
 // cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0.75", CVAR_ARCHIVE};
 
 // locque -- sbar
-cvar_t		scr_hidesbar = {"scr_hidesbar", "0", CVAR_ARCHIVE};
+cvar_t		scr_hidesbar = {"scr_hidesbar", "1", CVAR_ARCHIVE};
 
 cvar_t		scr_conwidth = {"scr_conwidth", "0", CVAR_ARCHIVE};
 cvar_t		scr_conscale = {"scr_conscale", "1", CVAR_ARCHIVE};
