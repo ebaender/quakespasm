@@ -105,6 +105,9 @@ cvar_t		scr_clock = {"scr_clock", "0", CVAR_NONE};
 cvar_t		scr_viewsize = {"viewsize","110", CVAR_ARCHIVE};
 // cvar_t		scr_viewsize = {"viewsize","100", CVAR_ARCHIVE};
 
+// locque -- clearing
+cvar_t		scr_fillclear = {"scr_fillclear", "1", CVAR_ARCHIVE};
+
 // locque -- fov
 cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
 // cvar_t		scr_fov = {"fov","90",CVAR_NONE};	// 10 - 170
@@ -563,6 +566,10 @@ void SCR_Init (void)
 
 	Cvar_RegisterVariable (&scr_fov_adapt);
 	Cvar_RegisterVariable (&scr_viewsize);
+
+	// locqure -- clearing
+	Cvar_RegisterVariable(&scr_fillclear);
+
 	Cvar_RegisterVariable (&scr_conspeed);
 	Cvar_RegisterVariable (&scr_showram);
 	Cvar_RegisterVariable (&scr_showturtle);
@@ -1150,16 +1157,21 @@ int SCR_ModalMessage (const char *text, float timeout) //johnfitz -- timeout
 
 //johnfitz -- deleted SCR_BringDownConsole
 
-
+// locque -- clearing
 /*
 ==================
-SCR_TileClear
+SCR_Clear
+// SCR_TileClear
 johnfitz -- modified to use glwidth/glheight instead of vid.width/vid.height
 	    also fixed the dimentions of right and top panels
 	    also added scr_tileclear_updates
 ==================
 */
-void SCR_TileClear (void)
+
+// locque -- clearing
+void SCR_Clear (void clearFunc (int,int,int,int))
+// void SCR_TileClear (void)
+
 {
 	//ericw -- added check for glsl gamma. TODO: remove this ugly optimization?
 	if (scr_tileclear_updates >= vid.numpages && !gl_clear.value && !(gl_glsl_gamma_able && vid_gamma.value != 1))
@@ -1169,12 +1181,20 @@ void SCR_TileClear (void)
 	if (r_refdef.vrect.x > 0)
 	{
 		// left
-		Draw_TileClear (0,
+
+		// locque -- clearing
+		clearFunc      (0,
+		// Draw_TileClear (0,
+
 						0,
 						r_refdef.vrect.x,
 						glheight - sb_lines);
 		// right
-		Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width,
+
+		// locque -- clearing
+		clearFunc	   (r_refdef.vrect.x + r_refdef.vrect.width,
+		// Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width,
+
 						0,
 						glwidth - r_refdef.vrect.x - r_refdef.vrect.width,
 						glheight - sb_lines);
@@ -1183,16 +1203,46 @@ void SCR_TileClear (void)
 	if (r_refdef.vrect.y > 0)
 	{
 		// top
-		Draw_TileClear (r_refdef.vrect.x,
+
+		// locque -- clearing
+		clearFunc	   (r_refdef.vrect.x,
+		// Draw_TileClear (r_refdef.vrect.x,
+
 						0,
 						r_refdef.vrect.width,
 						r_refdef.vrect.y);
 		// bottom
-		Draw_TileClear (r_refdef.vrect.x,
+
+		// locque -- clearing
+		clearFunc	   (r_refdef.vrect.x,
+		// Draw_TileClear (r_refdef.vrect.x,
+
 						r_refdef.vrect.y + r_refdef.vrect.height,
 						r_refdef.vrect.width,
 						glheight - r_refdef.vrect.y - r_refdef.vrect.height - sb_lines);
 	}
+}
+
+/*
+==================
+SCR_TileCear
+locque -- clearing
+==================
+*/
+void SCR_TileClear (void)
+{
+	SCR_Clear(Draw_TileClear);
+}
+
+/*
+==================
+SCR_FillClear
+locque -- clearing
+==================
+*/
+void SCR_FillClear (void)
+{
+	SCR_Clear(Draw_FillClear);
 }
 
 /*
@@ -1299,7 +1349,13 @@ void SCR_UpdateScreen (void)
 	GL_Set2D ();
 
 	//FIXME: only call this when needed
-	SCR_TileClear ();
+
+	// locque -- clearing
+	if (scr_fillclear.value)
+		SCR_FillClear();
+	else
+		SCR_TileClear ();
+	// SCR_TileClear ();
 
 	if (scr_drawdialog) //new game confirm
 	{

@@ -831,6 +831,17 @@ void Draw_Fill (int x, int y, int w, int h, int c, float alpha) //johnfitz -- ad
 }
 
 /*
+=============
+Draw_FillClear
+locque -- clearing
+=============
+*/
+void Draw_FillClear (int x, int y, int w, int h)
+{
+	Draw_Fill(x, y, w, h, 0, 1);
+}
+
+/*
 ================
 Draw_FadeScreen -- johnfitz -- revised
 ================
