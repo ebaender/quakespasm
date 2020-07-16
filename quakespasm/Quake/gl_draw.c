@@ -783,6 +783,13 @@ refresh window.
 */
 void Draw_TileClear (int x, int y, int w, int h)
 {
+	// locque -- clearing
+	if (scr_fillclear.value)
+	{
+		Draw_Fill(x, y, w, h, 0, 1);
+		return;
+	}
+
 	glpic_t	*gl;
 
 	gl = (glpic_t *)draw_backtile->data;
@@ -828,17 +835,6 @@ void Draw_Fill (int x, int y, int w, int h, int c, float alpha) //johnfitz -- ad
 	glDisable (GL_BLEND); //johnfitz -- for alpha
 	glEnable (GL_ALPHA_TEST); //johnfitz -- for alpha
 	glEnable (GL_TEXTURE_2D);
-}
-
-/*
-=============
-Draw_FillClear
-locque -- clearing
-=============
-*/
-void Draw_FillClear (int x, int y, int w, int h)
-{
-	Draw_Fill(x, y, w, h, 0, 1);
 }
 
 /*

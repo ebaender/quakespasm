@@ -71,6 +71,9 @@ extern cvar_t		scr_fov_vm;
 extern int			scr_zoom;
 extern cvar_t		scr_fov_zoom;
 
+// locque -- clearing
+extern cvar_t		scr_fillclear;
+
 void SCR_UpdateWholeScreen (void);
 
 //johnfitz -- stuff for 2d drawing control
