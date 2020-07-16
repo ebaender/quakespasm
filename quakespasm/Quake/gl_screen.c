@@ -395,6 +395,20 @@ float CalcFovy (float fov_x, float width, float height)
 
 /*
 =================
+SCR_GetUnstretched
+locque -- square scaling
+=================
+*/
+int SCR_GetUnstretched (int dim)
+{
+	if (r_scale.value)
+		return dim - dim % (int) r_scale.value;
+	else
+		return 0;
+}
+
+/*
+=================
 SCR_CalcRefdef
 
 Must be called whenever vid changes
@@ -445,8 +459,14 @@ static void SCR_CalcRefdef (void)
 	//johnfitz
 
 	//johnfitz -- rewrote this section
-	r_refdef.vrect.width = q_max(glwidth * size, 96); //no smaller than 96, for icons
-	r_refdef.vrect.height = q_min(glheight * size, glheight - sb_lines); //make room for sbar
+
+	// locque -- square scaling
+	r_refdef.vrect.width = q_max(SCR_GetUnstretched(glwidth * size), 96); //no smaller than 96, for icons
+	// r_refdef.vrect.width = q_max(glwidth * size, 96); //no smaller than 96, for icons
+	r_refdef.vrect.height = q_min(SCR_GetUnstretched(glheight * size), glheight - sb_lines); //make room for sbar
+	// r_refdef.vrect.height = q_min(glheight * size, glheight - sb_lines); //make room for sbar
+	// Con_Printf("%d %d\n", r_refdef.vrect.width, r_refdef.vrect.height);
+
 	r_refdef.vrect.x = (glwidth - r_refdef.vrect.width)/2;
 	r_refdef.vrect.y = (glheight - sb_lines - r_refdef.vrect.height)/2;
 	//johnfitz
@@ -1172,7 +1192,7 @@ int SCR_ModalMessage (const char *text, float timeout) //johnfitz -- timeout
 
 /*
 ==================
-SCR_Clear
+SCR_TileClear
 johnfitz -- modified to use glwidth/glheight instead of vid.width/vid.height
 	    also fixed the dimentions of right and top panels
 	    also added scr_tileclear_updates

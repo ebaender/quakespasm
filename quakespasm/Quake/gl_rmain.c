@@ -83,7 +83,11 @@ cvar_t	gl_nocolors = {"gl_nocolors","0",CVAR_NONE};
 //johnfitz -- new cvars
 cvar_t	r_stereo = {"r_stereo","0",CVAR_NONE};
 cvar_t	r_stereodepth = {"r_stereodepth","128",CVAR_NONE};
-cvar_t	r_clearcolor = {"r_clearcolor","2",CVAR_ARCHIVE};
+
+// locque -- square scaling - clear with pure black
+cvar_t	r_clearcolor = {"r_clearcolor","0",CVAR_ARCHIVE};
+// cvar_t	r_clearcolor = {"r_clearcolor","2",CVAR_ARCHIVE};
+
 cvar_t	r_drawflat = {"r_drawflat","0",CVAR_NONE};
 cvar_t	r_flatlightstyles = {"r_flatlightstyles", "0", CVAR_NONE};
 cvar_t	gl_fullbrights = {"gl_fullbrights", "1", CVAR_ARCHIVE};

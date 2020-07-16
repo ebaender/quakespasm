@@ -1398,7 +1398,7 @@ void Con_DrawConsole (int lines, qboolean drawinput)
 		for (x = 0; x < Con_GetLinewidth(); x++)
 		// for (x = 0; x < con_linewidth; x++)
 			if (y > (vid.height / scr_conscale.value - CON_PIC_HEIGHT) || !scr_conaspect.value)
-			Draw_Character (x + Con_GetWidthOffset() + 1 << 3, y - Con_GetHeightOffset(), text[x]);
+			Draw_Character ((x + Con_GetWidthOffset() + 1) << 3, y - Con_GetHeightOffset(), text[x]);
 			// Draw_Character ( (x + 1)<<3, y, text[x]);
 	}
 

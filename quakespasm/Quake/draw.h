@@ -36,10 +36,6 @@ void Draw_SubPic (float x, float y, float w, float h, qpic_t *pic, float s1, flo
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, int top, int bottom); //johnfitz -- more parameters
 void Draw_ConsoleBackground (void); //johnfitz -- removed parameter int lines
 void Draw_TileClear (int x, int y, int w, int h);
-
-// locque -- clearing
-void Draw_FillClear (int x, int y, int w, int h);
-
 void Draw_Fill (int x, int y, int w, int h, int c, float alpha); //johnfitz -- added alpha
 void Draw_FadeScreen (void);
 void Draw_String (int x, int y, const char *str);

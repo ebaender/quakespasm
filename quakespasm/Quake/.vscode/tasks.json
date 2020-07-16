@@ -6,7 +6,7 @@
         {
             "label": "Run",
             "type": "shell",
-            "command": "make && i3-msg workspace next && (sleep .5 && i3-msg floating toggle) & loqss -window -width 1278 -height 1023 && i3-msg workspace prev",
+            "command": "make && (sleep .5 && i3-msg floating toggle) & loqss -window -width 1280 -height 1024 && i3-msg workspace next && i3-msg workspace prev",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
