@@ -1,1 +1,2 @@
-Quake/*.o
+quakespasm/Quake/*.o
+quakespasm/Quake/quakespasm
