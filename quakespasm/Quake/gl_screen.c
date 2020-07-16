@@ -111,6 +111,7 @@ cvar_t		scr_fillclear = {"scr_fillclear", "1", CVAR_ARCHIVE};
 // locque -- fov
 cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
 // cvar_t		scr_fov = {"fov","90",CVAR_NONE};	// 10 - 170
+cvar_t		scr_fov_decouple = {"fov_decouple","1",CVAR_ARCHIVE};
 cvar_t		scr_fov_vm = {"fov_viewmodel","90",CVAR_ARCHIVE};
 
 // locque -- zoom
@@ -404,6 +405,9 @@ static void SCR_CalcRefdef (void)
 {
 	float		size, scale; //johnfitz -- scale
 
+	// locque -- fov
+	float 		fov_x;
+
 // force the status bar to redraw
 	Sbar_Changed ();
 
@@ -448,12 +452,15 @@ static void SCR_CalcRefdef (void)
 	//johnfitz
 
 	// locque -- zoom
-	r_refdef.fov_x = AdaptFovx(scr_zoom ? scr_fov_zoom.value : scr_fov.value, vid.width, vid.height);
+	fov_x = scr_zoom ? scr_fov_zoom.value : scr_fov.value;
+	r_refdef.fov_x = AdaptFovx(fov_x, vid.width, vid.height);
 	// r_refdef.fov_x = AdaptFovx(scr_fov.value, vid.width, vid.height);
 	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 	// locque -- fov -- zoom
-	r_refdef.fov_vm_x = AdaptFovx(scr_zoom ? scr_fov_vm.value - (scr_fov.value - scr_fov_zoom.value) : scr_fov_vm.value, vid.width, vid.height);
+	fov_x = scr_fov_decouple.value ? scr_fov_vm.value : scr_fov.value;
+	fov_x = scr_zoom ? fov_x - (scr_fov.value - scr_fov_zoom.value) : fov_x;
+	r_refdef.fov_vm_x = AdaptFovx(fov_x, vid.width, vid.height);
 	r_refdef.fov_vm_y = CalcFovy (r_refdef.fov_vm_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 	scr_vrect = r_refdef.vrect;
@@ -558,6 +565,8 @@ void SCR_Init (void)
 	Cvar_SetCallback (&scr_fov, SCR_Callback_refdef);
 
 	// locque -- fov
+	Cvar_RegisterVariable (&scr_fov_decouple);
+	Cvar_SetCallback (&scr_fov_decouple, SCR_Callback_refdef);
 	Cvar_RegisterVariable (&scr_fov_vm);
 	Cvar_SetCallback (&scr_fov_vm, SCR_Callback_refdef);
 
