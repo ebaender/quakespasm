@@ -178,7 +178,7 @@ void IN_Impulse (void) {in_impulse=Q_atoi(Cmd_Argv(1));}
 // locque -- sbar
 void IN_SBar (int sbar_state)
 {
-	if (key_dest == key_game && scr_sbar_hidden.value)
+	if (key_dest == key_game && scr_hidesbar.value)
 		scr_sbar = sbar_state;
 }
 void IN_SBarDown (void)

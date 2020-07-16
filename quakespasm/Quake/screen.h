@@ -61,7 +61,7 @@ extern cvar_t		scr_conaspect;
 
 // locque -- sbar
 extern int			scr_sbar;
-extern cvar_t		scr_sbar_hidden;
+extern cvar_t		scr_hidesbar;
 
 // locque -- fov
 extern cvar_t		scr_fov;

@@ -88,7 +88,7 @@ void Sbar_ShowScores (void)
 	sb_updates = 0;
 
 	// locque -- sbar
-	if (scr_sbar_hidden.value)
+	if (scr_hidesbar.value)
 		scr_sbar = 1;
 }
 
@@ -105,7 +105,7 @@ void Sbar_DontShowScores (void)
 	sb_updates = 0;
 
 	// locque -- sbar
-	if (scr_sbar_hidden.value)
+	if (scr_hidesbar.value)
 		scr_sbar = 0;
 }
 

@@ -92,7 +92,7 @@ cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0", CVAR_ARCHIVE};
 // cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0.75", CVAR_ARCHIVE};
 
 // locque -- sbar
-cvar_t		scr_sbar_hidden = {"scr_sbar_hidden", "0", CVAR_ARCHIVE};
+cvar_t		scr_hidesbar = {"scr_hidesbar", "0", CVAR_ARCHIVE};
 
 cvar_t		scr_conwidth = {"scr_conwidth", "0", CVAR_ARCHIVE};
 cvar_t		scr_conscale = {"scr_conscale", "1", CVAR_ARCHIVE};
@@ -427,7 +427,10 @@ static void SCR_CalcRefdef (void)
 	size = scr_viewsize.value;
 	scale = CLAMP (1.0, scr_sbarscale.value, (float)glwidth / 320.0);
 
-	if (size >= 120 || cl.intermission || (scr_sbaralpha.value < 1 || cl.qcvm.extfuncs.CSQC_DrawHud)) //johnfitz -- scr_sbaralpha.value. Spike -- simple csqc assumes fullscreen video the same way.
+	// locque -- sbar - don't move screen up when sbar can be hidden
+	if (size >= 120 || cl.intermission || (scr_sbaralpha.value < 1 || cl.qcvm.extfuncs.CSQC_DrawHud) || scr_hidesbar.value) //johnfitz -- scr_sbaralpha.value. Spike -- simple csqc assumes fullscreen video the same way.
+	// if (size >= 120 || cl.intermission || (scr_sbaralpha.value < 1 || cl.qcvm.extfuncs.CSQC_DrawHud)) //johnfitz -- scr_sbaralpha.value. Spike -- simple csqc assumes fullscreen video the same way.
+
 		sb_lines = 0;
 	else if (size >= 110)
 		sb_lines = 24 * scale;
@@ -523,7 +526,8 @@ locque -- sbar
 */
 void SCR_UpdateSBarState (cvar_t *var)
 {
-	scr_sbar = scr_sbar_hidden.value ? 0 : 1;
+	scr_sbar = scr_hidesbar.value ? 0 : 1;
+	SCR_CalcRefdef();
 }
 
 /*
@@ -540,8 +544,8 @@ void SCR_Init (void)
 	Cvar_RegisterVariable (&scr_sbaralpha);
 
 	// locque -- sbar
-	Cvar_RegisterVariable (&scr_sbar_hidden);
-	Cvar_SetCallback (&scr_sbar_hidden, SCR_UpdateSBarState);
+	Cvar_RegisterVariable (&scr_hidesbar);
+	Cvar_SetCallback (&scr_hidesbar, SCR_UpdateSBarState);
 
 	Cvar_SetCallback (&scr_conwidth, &SCR_Conwidth_f);
 	Cvar_SetCallback (&scr_conscale, &SCR_Conwidth_f);
