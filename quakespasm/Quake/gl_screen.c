@@ -86,7 +86,10 @@ int			scr_zoom;
 //johnfitz -- new cvars
 cvar_t		scr_menuscale = {"scr_menuscale", "1", CVAR_ARCHIVE};
 cvar_t		scr_sbarscale = {"scr_sbarscale", "1", CVAR_ARCHIVE};
-cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0.75", CVAR_ARCHIVE};
+
+// locque -- config - transparent sbar
+cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0", CVAR_ARCHIVE};
+// cvar_t		scr_sbaralpha = {"scr_sbaralpha", "0.75", CVAR_ARCHIVE};
 
 // locque -- sbar
 cvar_t		scr_sbar_hidden = {"scr_sbar_hidden", "0", CVAR_ARCHIVE};
@@ -98,7 +101,9 @@ cvar_t		scr_showfps = {"scr_showfps", "0", CVAR_NONE};
 cvar_t		scr_clock = {"scr_clock", "0", CVAR_NONE};
 //johnfitz
 
-cvar_t		scr_viewsize = {"viewsize","100", CVAR_ARCHIVE};
+// locque -- config - raised viewsize
+cvar_t		scr_viewsize = {"viewsize","110", CVAR_ARCHIVE};
+// cvar_t		scr_viewsize = {"viewsize","100", CVAR_ARCHIVE};
 
 // locque -- fov
 cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
