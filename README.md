@@ -1,4 +1,4 @@
-Heavily modified version of Spike's quakespasm fork, focused on improving the way UI elements are scaled and formatted.
+Heavily modified version of Spike's Quakespasm fork, focused on improving the way UI elements are scaled and formatted.
 
 ## Main Features
 - Decoupled main menu and console rendering from the window or fullscreen size to prevent stretching, can be scaled like any other UI elements now
