@@ -6,7 +6,7 @@ Heavily modified version of Spike's Quakespasm fork, focused on improving the wa
 - New FOV cvar that sets the regular FOV and automatically adjusts the viewmodel FOV to match, proportianality factor can be manually adjusted
 - Implemented mh's elevator fix, player no longer sinks into rising elevators
 
-## Optional Feautres
+## Optional Features
 - Reintroduced subtle idle camera sway as initially implemented by John Romero during Quake's development, was cut due to lack of approval from the rest of team
 - Dynamic status bar mode, will only show the status bar while a key is pressed for more immersion
 - Support for disabling certain monsters on the server side, added for a certain friend that really likes Quake but does not like spiders
